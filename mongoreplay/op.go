@@ -130,3 +130,50 @@ func IsDriverOp(op Op) bool {
 		return false
 	}
 }
+
+// LaSpina - added function below
+// IsReadOrWriteOp checks if an operation is a read or write operation for filtering
+// returns 'read', 'write', or 'none'
+func IsReadOrWriteOp(op Op) string {
+	var commandType string
+	var opType string
+
+	switch castOp := op.(type) {
+	case *QueryOp:
+		opType, commandType = extractOpType(castOp.QueryOp.Query)
+		switch opType {
+		case "insert", "update", "modify", "delete":
+			return "write"
+		case "find", "aggregate", "get_more":
+			return "read"
+		default:
+			return "none"
+		}
+	case *InsertOp:
+		return "write"
+	case *MsgOp:
+		commandType = castOp.CommandName
+		switch commandType {
+		case "insert", "update", "modify", "delete":
+			return "write"
+		case "find", "aggregate", "get_more":
+			return "read"
+		default:
+			return "none"
+		}
+	case *CommandOp:
+		commandType = castOp.CommandName
+
+	default:
+		return "none"
+	}
+
+	switch commandType {
+	case "insert", "update", "modify", "delete":
+		return "write"
+	case "find", "aggregate", "get_more":
+		return "read"
+	default:
+		return "none"
+	}
+}

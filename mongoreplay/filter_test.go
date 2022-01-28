@@ -17,7 +17,7 @@ import (
 )
 
 func TestRemoveDriverOpsFromFile(t *testing.T) {
-cases := []struct {
+	cases := []struct {
 		name string
 
 		driverOpsToGenerate   []string
@@ -83,7 +83,7 @@ cases := []struct {
 			}
 		}()
 
-		skipConf := newSkipConfig(c.shouldRemoveDriverOps, time.Time{}, 0*time.Second)
+		skipConf := newSkipConfig(c.shouldRemoveDriverOps, time.Time{}, 0*time.Second, false, false)
 
 		// run Filter to remove the driver op from the file
 		if err := Filter(generator.opChan, []*PlaybackFileWriter{playbackWriter},
@@ -130,7 +130,7 @@ cases := []struct {
 }
 
 func TestSplitInputFile(t *testing.T) {
-cases := []struct {
+	cases := []struct {
 		name string
 
 		numPlaybackFiles    int
@@ -184,7 +184,7 @@ cases := []struct {
 			close(opChan)
 		}()
 
-		skipConf := newSkipConfig(false, time.Time{}, 0*time.Second)
+		skipConf := newSkipConfig(false, time.Time{}, 0*time.Second, false, false)
 		// run the main filter routine with the given input
 		if err := Filter(opChan, outfiles, skipConf); err != nil {
 			t.Error(err)
@@ -217,7 +217,7 @@ cases := []struct {
 }
 
 func TestRemoveOpsBeforeTime(t *testing.T) {
-// array of times to use for testing
+	// array of times to use for testing
 	timesForTest := make([]time.Time, 16)
 	now := time.Now()
 	for i := range timesForTest {
@@ -282,7 +282,7 @@ func TestRemoveOpsBeforeTime(t *testing.T) {
 			close(inputOpChan)
 		}()
 
-		skipConf := newSkipConfig(false, c.timeToTruncateBefore, 0*time.Second)
+		skipConf := newSkipConfig(false, c.timeToTruncateBefore, 0*time.Second, false, false)
 
 		// run the main filter routine with the given input
 		if err := Filter(inputOpChan, []*PlaybackFileWriter{playbackWriter}, skipConf); err != nil {
@@ -316,7 +316,7 @@ func TestRemoveOpsBeforeTime(t *testing.T) {
 }
 
 func TestRemoveOpsAfterDuration(t *testing.T) {
-// array of times to use for testing
+	// array of times to use for testing
 	timesForTest := make([]time.Time, 16)
 	now := time.Now()
 	for i := range timesForTest {
