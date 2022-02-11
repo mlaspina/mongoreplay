@@ -244,21 +244,26 @@ func (sc *skipConfig) shouldFilterOp(op *RecordedOp) (bool, error) {
 	}
 
 	// LaSpina - Check for read/write ops
-	if sc.readOpsOnly || sc.writeOpsOnly {
-		var opType string
+	if sc.readOpsOnly {
 		parsedOp, err := op.RawOp.Parse()
 		if err != nil {
 			return true, err
 		}
-		opType = IsReadOrWriteOp(parsedOp)
-		if sc.writeOpsOnly && opType == "write" {
-			return false, err
-		}
-		if sc.readOpsOnly && opType == "read" {
+		if IsReadOp(parsedOp) {
 			return false, err
 		}
 		return true, err
 	}
 
+	if sc.writeOpsOnly {
+		parsedOp, err := op.RawOp.Parse()
+		if err != nil {
+			return true, err
+		}
+		if IsWriteOp(parsedOp) {
+			return false, err
+		}
+		return true, err
+	}
 	return false, nil
 }
