@@ -35,7 +35,7 @@ export GO111MODULE=on
 export GOSUMDB=off
 go build -o "bin/mongoreplay$BINARY_EXT" $(buildflags) -ldflags "$(print_ldflags)" -tags "$(print_tags $tags)" "main/mongoreplay.go" || { echo "Error building mongoreplay"; ec=1; }
 ./bin/mongoreplay${BINARY_EXT} --version | head -1
-
+cp ./bin/mongoreplay${BINARY_EXT} /usr/local/bin/mongoreplay
 if [ -t /dev/stdin ]; then
     stty sane
 fi
